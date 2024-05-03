@@ -6,6 +6,7 @@ var _banner_type = require("./banner_type");
 var _kecamatan = require("./kecamatan");
 var _kota = require("./kota");
 var _location = require("./location");
+var _point = require("./point");
 var _provinsi = require("./provinsi");
 var _testimoni = require("./testimoni");
 
@@ -17,6 +18,7 @@ function initModels(sequelize) {
   var kecamatan = _kecamatan(sequelize, DataTypes);
   var kota = _kota(sequelize, DataTypes);
   var location = _location(sequelize, DataTypes);
+  var point = _point(sequelize, DataTypes);
   var provinsi = _provinsi(sequelize, DataTypes);
   var testimoni = _testimoni(sequelize, DataTypes);
 
@@ -29,6 +31,7 @@ function initModels(sequelize) {
     kecamatan,
     kota,
     location,
+    point,
     provinsi,
     testimoni,
   };

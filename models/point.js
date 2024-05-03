@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('testimoni', {
-    id_testimoni: {
+  return sequelize.define('point', {
+    id_point: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -11,29 +11,17 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    testimoni: {
-      type: DataTypes.STRING(200),
-      allowNull: false
-    },
-    star: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    age: {
+    point: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     foto: {
       type: DataTypes.TEXT,
       allowNull: false
-    },
-    status: {
-      type: DataTypes.INTEGER,
-      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'testimoni',
+    tableName: 'point',
     timestamps: true,
     indexes: [
       {
@@ -41,7 +29,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "id_testimoni" },
+          { name: "id_point" },
         ]
       },
     ]

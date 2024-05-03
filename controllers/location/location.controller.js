@@ -4,7 +4,8 @@ const customErrorMiddleware = require('../../middleware/middleware.result');
 const { Op, Sequelize, where, DATE } = require('sequelize');
 const { mode } = require('crypto-js');
 const e = require('express');
-const axios = require('axios')
+const axios = require('axios');
+const { getTestimoni } = require('../testimoni/testimoni.controller');
 
 
 exports.getSelect = async (req, res) => {
@@ -146,7 +147,14 @@ exports.addLocation = async (req, res) => {
 
 exports.getLocation = async (req, res) => {
     try {
-        const getLocation = await models.location.findAll(
+        models.location.belongsTo(models.provinsi, { targetKey: 'id_provinsi', foreignKey: 'id_provinsi' });
+        models.location.belongsTo(models.kota, { targetKey: 'id_kota', foreignKey: 'id_kota' });
+        models.location.belongsTo(models.kecamatan, { targetKey: 'id_kecamatan', foreignKey: 'id_kecamatan' });
+
+        const { limit, offset } = core.getPagination(Number(req.query.limit), Number(req.query.page));
+
+
+        const getLocation = await models.location.findAndCountAll(
             {
                 where: {
                     ...req.query.id_provinsi ? {
@@ -155,20 +163,50 @@ exports.getLocation = async (req, res) => {
                     ...req.query.id_kota ? {
                         id_provinsi: req.query.id_kota
                     } : {}
-                }
+                },
+                include: [
+                    {
+                        model: models.provinsi
+                    },
+                    {
+                        model: models.kota
+                    },
+                    {
+                        model: models.kecamatan
+                    },
+                ],
+                order: [['created_at', 'desc']]
+
+
             }
         )
         if (getLocation) {
+            const currentPage = Number(req.query.page) || 1; // Halaman saat ini
+            const itemsPerPage = Number(req.query.limit) || 10; // Jumlah item per halaman
+            const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+            const result = await getLocation.rows.map((i, index) => {
+                return {
+                    no: startIndex + index,
+                    nama_mitra: i.nama_mitra,
+                    id_provinsi: i.id_provinsi,
+                    provinsi: i.provinsi.nama_provinsi,
+                    id_kota: i.id_kota,
+                    kota: i.kotum.nama_kota,
+                    id_kecamatan: i.id_kecamatan,
+                    kecamatan: i.kecamatan.nama_kecamatan,
+                    location: i.location,
+                    link: i.link,
+                    created_at: i.created_at
+
+                }
+            })
             output = {
                 status: {
                     code: 200,
                     message: "Sukses Get Location"
                 },
-                data: getLocation.map((i) => {
-                    return {
-
-                    }
-                })
+                data: result
             }
         }
     } catch (error) {
@@ -187,6 +225,7 @@ exports.getLocation = async (req, res) => {
         res.status(errorsFromMiddleware.status.code).send(errorsFromMiddleware)
     }
 }
+
 exports.uploadBannerHome = async (req, res) => {
     try {
         const getUser = await models.auth.findOne(

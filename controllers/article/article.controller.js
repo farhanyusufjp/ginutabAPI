@@ -221,7 +221,6 @@ exports.editArtcile = async (req, res) => {
         res.status(errorsFromMiddleware.status.code).send(errorsFromMiddleware)
     }
 }
-
 exports.deleteArticle = async (req, res) => {
     try {
         const getUser = await models.auth.findOne(

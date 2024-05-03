@@ -11,5 +11,6 @@ router.use('/auth', require('./auth/auth.routes'))
 router.use('/banner', require('./banner/banner.routes'))
 router.use('/article', require('./article/article.routes'))
 router.use('/testimoni', require('./testimoni/testimoni.routes'))
+router.use('/location', require('./location/location.routes'))
 
 module.exports = router;
